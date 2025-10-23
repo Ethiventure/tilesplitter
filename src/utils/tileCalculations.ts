@@ -79,12 +79,16 @@ export function calculateTileGrid(
       tileHeightPx = Math.floor(imageHeight / rows);
       break;
 
-    case 'grid':
+    case 'grid': {
       columns = Math.floor(config.value_h ?? 1);
       rows = Math.floor(config.value_v ?? 1);
-      tileWidthPx = Math.floor(imageWidth / columns);
-      tileHeightPx = Math.floor(imageHeight / rows);
+      const tileWidthForGrid = Math.ceil(imageWidth / columns);
+      const tileHeightForGrid = Math.ceil(imageHeight / rows);
+      const squareTileSize = Math.max(tileWidthForGrid, tileHeightForGrid);
+      tileWidthPx = squareTileSize;
+      tileHeightPx = squareTileSize;
       break;
+    }
 
     default:
       throw new Error('Invalid measurement unit');
