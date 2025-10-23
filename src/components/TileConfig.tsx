@@ -18,6 +18,20 @@ export function TileConfig({ config, onChange, disabled }: TileConfigProps) {
     onChange(newConfig);
   };
 
+  const handleValueHChange = (value_h: number) => {
+    const newConfig = { ...config, value_h };
+    const validationError = validateTileConfig(newConfig);
+    setError(validationError);
+    onChange(newConfig);
+  };
+
+  const handleValueVChange = (value_v: number) => {
+    const newConfig = { ...config, value_v };
+    const validationError = validateTileConfig(newConfig);
+    setError(validationError);
+    onChange(newConfig);
+  };
+
   const handleValueChange = (value: number) => {
     const newConfig = { ...config, value };
     const validationError = validateTileConfig(newConfig);
@@ -95,37 +109,83 @@ export function TileConfig({ config, onChange, disabled }: TileConfigProps) {
             >
               Count
             </button>
+            <button
+              onClick={() => handleUnitChange('grid')}
+              disabled={disabled}
+              className={`px-4 py-2 text-sm font-body font-medium rounded-md transition-colors border ${
+                config.unit === 'grid'
+                  ? 'bg-folk-main text-white border-folk-main shadow-sm'
+                  : 'bg-folk-bg text-folk-text border-folk-accent1/30 hover:border-folk-accent1'
+              } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              Grid
+            </button>
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-body font-medium text-folk-text mb-2">
-            {config.unit === 'count' ? 'Number of Squares' : 'Square Size'}
-          </label>
-          <input
-            type="text"
-            inputMode="decimal"
-            value={config.value}
-            onChange={(e) => {
-              const val = e.target.value;
-              if (val === '') {
-                handleValueChange(0);
-              } else {
-                const num = Number(val);
-                if (!isNaN(num) && num >= 0) {
-                  handleValueChange(num);
+        {config.unit === 'grid' ? (
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="horizontal_input" className="block text-sm font-body font-medium text-folk-text mb-2">
+                Horizontal
+              </label>
+              <input
+                id="horizontal_input"
+                type="number"
+                value={config.value_h || ''}
+                onChange={(e) => handleValueHChange(Number(e.target.value))}
+                disabled={disabled}
+                min="1"
+                step="1"
+                className="w-full px-3 py-2 border-2 border-folk-accent1/30 rounded-md focus:ring-2 focus:ring-folk-main focus:border-folk-main disabled:opacity-50 disabled:cursor-not-allowed bg-white/80 text-folk-text"
+              />
+            </div>
+            <div>
+              <label htmlFor="vertical_input" className="block text-sm font-body font-medium text-folk-text mb-2">
+                Vertical
+              </label>
+              <input
+                id="vertical_input"
+                type="number"
+                value={config.value_v || ''}
+                onChange={(e) => handleValueVChange(Number(e.target.value))}
+                disabled={disabled}
+                min="1"
+                step="1"
+                className="w-full px-3 py-2 border-2 border-folk-accent1/30 rounded-md focus:ring-2 focus:ring-folk-main focus:border-folk-main disabled:opacity-50 disabled:cursor-not-allowed bg-white/80 text-folk-text"
+              />
+            </div>
+          </div>
+        ) : (
+          <div>
+            <label className="block text-sm font-body font-medium text-folk-text mb-2">
+              {config.unit === 'count' ? 'Number of Squares' : 'Square Size'}
+            </label>
+            <input
+              type="text"
+              inputMode="decimal"
+              value={config.value}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === '') {
+                  handleValueChange(0);
+                } else {
+                  const num = Number(val);
+                  if (!isNaN(num) && num >= 0) {
+                    handleValueChange(num);
+                  }
                 }
-              }
-            }}
-            disabled={disabled}
-            className="w-full px-3 py-2 border-2 border-folk-accent1/30 rounded-md focus:ring-2 focus:ring-folk-main focus:border-folk-main disabled:opacity-50 disabled:cursor-not-allowed bg-white/80 text-folk-text"
-          />
-          <p className="text-xs text-folk-text/60 mt-1">
-            {config.unit === 'count'
-              ? 'Number of squares across and down'
-              : `Size of each square tile in ${config.unit}`}
-          </p>
-        </div>
+              }}
+              disabled={disabled}
+              className="w-full px-3 py-2 border-2 border-folk-accent1/30 rounded-md focus:ring-2 focus:ring-folk-main focus:border-folk-main disabled:opacity-50 disabled:cursor-not-allowed bg-white/80 text-folk-text"
+            />
+            <p className="text-xs text-folk-text/60 mt-1">
+              {config.unit === 'count'
+                ? 'Number of squares across and down'
+                : `Size of each square tile in ${config.unit}`}
+            </p>
+          </div>
+        )}
 
         {requiresDpi && (
           <div>

@@ -12,8 +12,8 @@ function App() {
   const [image, setImage] = useState<LoadedImage | null>(null);
   const [originalFile, setOriginalFile] = useState<File | null>(null);
   const [config, setConfig] = useState<TileConfigType>({
-    unit: 'pixels',
-    value: 500,
+    unit: 'mm',
+    value: 50,
     dpi: 300,
     remainderStrategy: 'crop',
   });
