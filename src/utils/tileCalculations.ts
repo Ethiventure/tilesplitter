@@ -1,9 +1,11 @@
-export type MeasurementUnit = 'pixels' | 'mm' | 'inches' | 'count';
+export type MeasurementUnit = 'pixels' | 'mm' | 'inches' | 'count' | 'grid';
 export type RemainderStrategy = 'crop' | 'pad';
 
 export interface TileConfig {
   unit: MeasurementUnit;
   value: number;
+  value_h?: number;
+  value_v?: number;
   dpi?: number;
   remainderStrategy: RemainderStrategy;
 }
@@ -77,6 +79,13 @@ export function calculateTileGrid(
       tileHeightPx = Math.floor(imageHeight / rows);
       break;
 
+    case 'grid':
+      columns = Math.floor(config.value_h ?? 1);
+      rows = Math.floor(config.value_v ?? 1);
+      tileWidthPx = Math.floor(imageWidth / columns);
+      tileHeightPx = Math.floor(imageHeight / rows);
+      break;
+
     default:
       throw new Error('Invalid measurement unit');
   }
@@ -140,8 +149,17 @@ export function getTileCoordinates(
 }
 
 export function validateTileConfig(config: TileConfig): string | null {
-  if (config.value <= 0) {
-    return 'Value must be greater than 0';
+  if (config.unit === 'grid') {
+    if ((config.value_h ?? 0) <= 0) {
+      return 'Horizontal count must be greater than 0';
+    }
+    if ((config.value_v ?? 0) <= 0) {
+      return 'Vertical count must be greater than 0';
+    }
+  } else {
+    if (config.value <= 0) {
+      return 'Value must be greater than 0';
+    }
   }
 
   if ((config.unit === 'mm' || config.unit === 'inches') && !config.dpi) {
