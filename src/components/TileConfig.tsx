@@ -103,12 +103,21 @@ export function TileConfig({ config, onChange, disabled }: TileConfigProps) {
             {config.unit === 'count' ? 'Number of Squares' : 'Square Size'}
           </label>
           <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             value={config.value}
-            onChange={(e) => handleValueChange(Number(e.target.value))}
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val === '') {
+                handleValueChange(0);
+              } else {
+                const num = Number(val);
+                if (!isNaN(num) && num >= 0) {
+                  handleValueChange(num);
+                }
+              }
+            }}
             disabled={disabled}
-            min="1"
-            step={config.unit === 'inches' ? '0.1' : '1'}
             className="w-full px-3 py-2 border-2 border-folk-accent1/30 rounded-md focus:ring-2 focus:ring-folk-main focus:border-folk-main disabled:opacity-50 disabled:cursor-not-allowed bg-white/80 text-folk-text"
           />
           <p className="text-xs text-folk-text/60 mt-1">
