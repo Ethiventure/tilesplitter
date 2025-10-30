@@ -26,8 +26,6 @@ export function ExportPanel({ image, grid, originalFile, disabled }: ExportPanel
       for (let i = 0; i < tiles.length; i++) {
         const filename = getTileFilename(originalFile.name, i, grid);
         downloadBlob(tiles[i], filename);
-
-        await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
       alert(`Successfully exported ${tiles.length} tiles!`);
